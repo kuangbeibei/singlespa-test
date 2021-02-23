@@ -15,10 +15,10 @@ async function loadScript(url) {
 }
 
 /**
- * appName: string, 随便命名
- * applicationOrLoadingFn: Application<{}>, 加载应用的函数
- * activityFn: ActivityFn, 激活应用的函数
- * customProps?: {} | CustomPropsFn<{}>，自定义内容
+ * @appName {string}, 随便命名
+ * @applicationOrLoadingFn  Application<{}>, 加载应用的函数
+ * @activityFn  ActivityFn, 激活应用的函数
+ * @customProps  {} | CustomPropsFn<{}>，自定义内容，可选参数
  */
 registerApplication('myChildVueApp',
 	async () => {  // single-spa规定用promise函数
@@ -29,7 +29,8 @@ registerApplication('myChildVueApp',
 		await loadScript(`http://localhost:10000/js/app.js`)
 		return window.singleVue
 	},
-	location => location.pathname.indexOf('/vue') > -1)
+	location => location.pathname.indexOf('/vue') > -1
+)
 
 start()
 

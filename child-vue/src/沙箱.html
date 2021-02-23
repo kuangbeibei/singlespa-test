@@ -22,21 +22,17 @@
             this.modifyPropsMap = {}
             this.active()
         }
-
         SnapShotSandbox.prototype.active = function () {
-            this.windowSnapShot = {}    // 拍照
+            this.windowSnapShot = {} // 拍照
             for (const prop in window) {
                 if (window.hasOwnProperty(prop)) {
                     this.windowSnapShot[prop] = window[prop]
                 }
             }
-
             Object.keys(this.modifyPropsMap).forEach(p => {
                 window[p] = this.modifyPropsMap[p]
             })
-
         }
-
         SnapShotSandbox.prototype.inactive = function () {
             for (const prop in window) {
                 if (window.hasOwnProperty(prop)) {
@@ -47,9 +43,8 @@
                 }
             }
         }
-
+        
         let sandbox = new SnapShotSandbox();
-
         (window => {
             window.a = 1
             window.b = 2
@@ -64,11 +59,7 @@
             console.log('inactive 2 ----', window.a, window.b)
             sandbox.active()
             console.log('active 2 ----', window.a, window.b)
-
         })(sandbox.proxy)
-
-        
-        
     </script>
 
 </body>

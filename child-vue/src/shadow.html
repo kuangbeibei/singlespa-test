@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p>hello world</p>
+    <div id="shadow"></div>
+    <script>
+        // 浏览器api
+        let shadowDom = shadow.attachShadow({
+            mode: 'closed' // open是外部可以访问
+        })
+
+        // 那么newEle就在这个shadow区域里面，外界是访问不到的
+        let newEle = document.createElement('p')
+        newEle.innerHTML = `hello kk`
+
+        let styleEle = document.createElement('style')
+        styleEle.textContent = `
+            p {
+                color: indianred
+            }
+        `
+        shadowDom.appendChild(styleEle) // 会发现这个样式，虽然是给p添加的，但只有shadowDom 这个boundary内部生效，这个是真正意义上的隔离。
+        shadowDom.appendChild(newEle)
+
+        // 当然，如果最后把元素和样式都append到document.body或者其他越过shadow boundary的地方，这个就不生效了
+        // 比如react中的portal，弹层，是放在全局上的，这时候就需要手动去处理这种特殊情况。 
+    </script>
+</body>
+</html>

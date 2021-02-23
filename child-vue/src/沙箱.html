@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // singleSPA会造成全局污染，很多属性都挂载在window上。
+        // 例如window.a是A应用的，在访问B应用时，可以通过window.a拿到A应用的变量，不安全。这时候，就需要考虑当挂载A应用时才去添加某变量，当写在应用时也应该卸载相应全局变量，即切换应用时选择丢弃和恢复属性，做到环境隔离。
+        // 这时候就要用到js沙箱机制，创造一个干净的环境
+        // 什么是JS沙箱？（proxy有的浏览器不支持）
+        // 1. 快照沙箱，拍照保存区别。 但是如果是多个子应用就不能使用这种方式了，会出现混乱，这时就可以使用es6的proxy
+        // 2. 代理沙箱可以实现多应用沙箱，把不同的应用用不同代理去处理
+
+        function SnapShotSandbox() {
+            this.proxy = window
+            this.modifyPropsMap = {}
+            this.active()
+        }
+
+        SnapShotSandbox.prototype.active = function () {
+            this.windowSnapShot = {}    // 拍照
+            for (const prop in window) {
+                if (window.hasOwnProperty(prop)) {
+                    this.windowSnapShot[prop] = window[prop]
+                }
+            }
+
+            Object.keys(this.modifyPropsMap).forEach(p => {
+                window[p] = this.modifyPropsMap[p]
+            })
+
+        }
+
+        SnapShotSandbox.prototype.inactive = function () {
+            for (const prop in window) {
+                if (window.hasOwnProperty(prop)) {
+                    if (window[prop] !== this.windowSnapShot[prop]) {
+                        this.modifyPropsMap[prop] = window[prop];
+                        window[prop] = this.windowSnapShot[prop]
+                    }
+                }
+            }
+        }
+
+        let sandbox = new SnapShotSandbox();
+
+        (window => {
+            window.a = 1
+            window.b = 2
+            console.log(window.a, window.b)
+            sandbox.inactive()
+            console.log('inactive 1 ----', window.a, window.b)
+            sandbox.active()
+            console.log('active 1 ----', window.a, window.b)
+            window.a = 3
+            window.b = 4
+            sandbox.inactive()
+            console.log('inactive 2 ----', window.a, window.b)
+            sandbox.active()
+            console.log('active 2 ----', window.a, window.b)
+
+        })(sandbox.proxy)
+
+        
+        
+    </script>
+
+</body>
+
+</html>

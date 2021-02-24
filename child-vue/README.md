@@ -1,6 +1,6 @@
-# single-spa很简陋，仅仅能够根据不同路由（路由劫持）去加载不同应用
-# 用single-spa去加载这个vue子应用
-# child-vue
+- single-spa很简陋，仅仅能够根据不同路由（路由劫持）去加载不同应用
+- 用single-spa去加载这个vue子应用
+## child-vue
 
 ## Project setup
 ```
